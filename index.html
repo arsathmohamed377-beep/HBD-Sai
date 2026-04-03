@@ -1,0 +1,1392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>A Little Surprise 💖</title>
+<style>
+  /* =============================================
+     FONTS & RESET
+  ============================================= */
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap');
+
+  *, *::before, *::after {
+    margin: 0; padding: 0; box-sizing: border-box;
+  }
+
+  :root {
+    --rose:       #ff6b95;
+    --blush:      #ffb3c6;
+    --lavender:   #c084fc;
+    --lilac:      #e9d5ff;
+    --deep:       #7c3aed;
+    --cream:      #fff7f9;
+    --glass-bg:   rgba(255,255,255,0.14);
+    --glass-bdr:  rgba(255,255,255,0.35);
+    --shadow:     rgba(124,58,237,0.18);
+    --txt-main:   #3b1a4a;
+    --txt-light:  #6b3fa0;
+  }
+
+  html, body {
+    height: 100%;
+    overflow: hidden;
+    font-family: 'DM Sans', sans-serif;
+    background: #1a0a2e;
+    touch-action: manipulation;
+  }
+
+  /* =============================================
+     GRADIENT BACKGROUND
+  ============================================= */
+  #bg-gradient {
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 20% 10%,  #ff6b9530 0%, transparent 55%),
+      radial-gradient(ellipse at 80% 90%,  #c084fc35 0%, transparent 55%),
+      radial-gradient(ellipse at 50% 50%,  #7c3aed18 0%, transparent 70%),
+      linear-gradient(160deg, #1a0a2e 0%, #2e0a4a 40%, #1a0a3e 100%);
+    z-index: 0;
+  }
+
+  /* =============================================
+     FLOATING HEARTS CANVAS
+  ============================================= */
+  #hearts-canvas {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* =============================================
+     CONFETTI CANVAS
+  ============================================= */
+  #confetti-canvas {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 10;
+    display: none;
+  }
+
+  /* =============================================
+     APP WRAPPER
+  ============================================= */
+  #app {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 5;
+    padding: 16px;
+  }
+
+  /* =============================================
+     SCREENS
+  ============================================= */
+  .screen {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 360px;
+    gap: 0;
+    animation: screenIn 0.55s cubic-bezier(0.34,1.56,0.64,1) both;
+  }
+
+  .screen.active {
+    display: flex;
+  }
+
+  @keyframes screenIn {
+    from { opacity: 0; transform: scale(0.88) translateY(24px); }
+    to   { opacity: 1; transform: scale(1)    translateY(0);    }
+  }
+
+  @keyframes screenOut {
+    from { opacity: 1; transform: scale(1) translateY(0); }
+    to   { opacity: 0; transform: scale(0.9) translateY(-20px); }
+  }
+
+  .screen.exiting {
+    animation: screenOut 0.3s ease forwards;
+  }
+
+  /* =============================================
+     CARD (glassmorphism)
+  ============================================= */
+  .card {
+    width: 100%;
+    background: var(--glass-bg);
+    backdrop-filter: blur(22px) saturate(180%);
+    -webkit-backdrop-filter: blur(22px) saturate(180%);
+    border: 1.5px solid var(--glass-bdr);
+    border-radius: 28px;
+    padding: 28px 24px 24px;
+    box-shadow:
+      0 8px 40px var(--shadow),
+      0 1px 0 rgba(255,255,255,0.2) inset;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  }
+
+  /* =============================================
+     TYPOGRAPHY
+  ============================================= */
+  .headline {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.25rem, 5vw, 1.6rem);
+    font-weight: 700;
+    color: #fff;
+    text-align: center;
+    line-height: 1.35;
+    text-shadow: 0 2px 16px rgba(255,107,149,0.5);
+    letter-spacing: -0.01em;
+  }
+
+  .headline em {
+    font-style: italic;
+    color: var(--blush);
+  }
+
+  /* =============================================
+     VIDEO CONTAINER
+  ============================================= */
+  .video-wrap {
+    width: 100%;
+    border-radius: 18px;
+    overflow: hidden;
+    position: relative;
+    background: rgba(0,0,0,0.3);
+    box-shadow: 0 4px 24px rgba(0,0,0,0.3);
+    aspect-ratio: 16/9;
+  }
+
+  .video-wrap video,
+  .video-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    position: relative;
+    z-index: 2;
+  }
+
+  /* (video-placeholder styles removed — no longer used) */
+
+  /* =============================================
+     BUTTONS
+  ============================================= */
+  .btn-row {
+    display: flex;
+    gap: 12px;
+    width: 100%;
+    justify-content: center;
+  }
+
+  .btn {
+    flex: 1;
+    max-width: 140px;
+    padding: 14px 20px;
+    border: none;
+    border-radius: 50px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition:
+      transform 0.18s cubic-bezier(0.34,1.56,0.64,1),
+      box-shadow 0.18s ease;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+  }
+
+  .btn::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(255,255,255,0);
+    transition: background 0.15s ease;
+    border-radius: inherit;
+  }
+
+  .btn:active::after {
+    background: rgba(255,255,255,0.15);
+  }
+
+  .btn:active {
+    transform: scale(0.94) !important;
+  }
+
+  .btn-yes {
+    background: linear-gradient(135deg, #ff6b95, #c084fc);
+    color: #fff;
+    box-shadow: 0 4px 18px rgba(255,107,149,0.45);
+  }
+
+  .btn-yes:hover {
+    transform: scale(1.04) translateY(-1px);
+    box-shadow: 0 8px 24px rgba(255,107,149,0.55);
+  }
+
+  .btn-no {
+    background: rgba(255,255,255,0.12);
+    color: rgba(255,255,255,0.85);
+    border: 1.5px solid rgba(255,255,255,0.25);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+  }
+
+  .btn-no:hover {
+    transform: scale(1.04) translateY(-1px);
+    background: rgba(255,255,255,0.18);
+  }
+
+  .btn-single {
+    max-width: 200px;
+  }
+
+  .btn-wide {
+    max-width: 220px;
+    font-size: 1rem;
+  }
+
+  /* Shake animation for "No" button escape */
+  @keyframes shake {
+    0%,100%{transform:translateX(0)}
+    20%{transform:translateX(-8px)}
+    40%{transform:translateX(8px)}
+    60%{transform:translateX(-6px)}
+    80%{transform:translateX(6px)}
+  }
+
+  /* =============================================
+     BIRTHDAY TEXT GLOW
+  ============================================= */
+  @keyframes pulseGlow {
+    0%,100%{box-shadow:0 0 0 6px rgba(255,107,149,0.25),0 0 0 12px rgba(192,132,252,0.15),0 12px 40px rgba(124,58,237,0.4);}
+    50%{box-shadow:0 0 0 10px rgba(255,107,149,0.35),0 0 0 20px rgba(192,132,252,0.2),0 16px 50px rgba(124,58,237,0.55);}
+  }
+
+  .final-image-wrap img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .final-image-placeholder {
+    width: 100%; height: 100%;
+    display: flex; align-items: center; justify-content: center;
+    background: linear-gradient(135deg, #ff6b95, #c084fc);
+    font-size: 4rem;
+  }
+
+  .birthday-text {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.5rem, 6vw, 2rem);
+    font-weight: 700;
+    color: #fff;
+    text-align: center;
+    text-shadow:
+      0 0 20px rgba(255,107,149,0.8),
+      0 2px 20px rgba(192,132,252,0.6);
+    animation: textGlow 2s ease-in-out infinite alternate;
+  }
+
+  @keyframes textGlow {
+    from { text-shadow: 0 0 20px rgba(255,107,149,0.6), 0 2px 20px rgba(192,132,252,0.4); }
+    to   { text-shadow: 0 0 35px rgba(255,107,149,1),   0 2px 35px rgba(192,132,252,0.8); }
+  }
+
+  .sub-text {
+    font-size: 0.88rem;
+    color: rgba(255,255,255,0.65);
+    text-align: center;
+    letter-spacing: 0.02em;
+  }
+
+  /* =============================================
+     EMOJI BADGE
+  ============================================= */
+  .emoji-badge {
+    font-size: 2.4rem;
+    animation: floatBob 2.2s ease-in-out infinite;
+    filter: drop-shadow(0 4px 12px rgba(255,107,149,0.5));
+  }
+
+  @keyframes floatBob {
+    0%,100%{transform:translateY(0) rotate(-3deg);}
+    50%{transform:translateY(-8px) rotate(3deg);}
+  }
+
+  /* =============================================
+     SCREEN 2 SPECIAL — ANGRY
+  ============================================= */
+  .angry-text {
+    color: var(--blush);
+    animation: angryShake 0.5s ease infinite alternate;
+  }
+
+  @keyframes angryShake {
+    from{transform:rotate(-1deg);}
+    to{transform:rotate(1deg);}
+  }
+
+  /* =============================================
+     PROGRESS DOTS
+  ============================================= */
+  .progress-dots {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+    margin-top: 4px;
+  }
+
+  .dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.25);
+    transition: all 0.4s ease;
+  }
+
+  .dot.active {
+    background: var(--rose);
+    box-shadow: 0 0 8px var(--rose);
+    transform: scale(1.3);
+  }
+
+  .dot.done {
+    background: rgba(255,107,149,0.5);
+  }
+
+  /* =============================================
+     FINAL SCREEN — INTERACTIVE CAKE STYLES
+  ============================================= */
+
+  /* Card overrides for final screen */
+  #final-card {
+    gap: 18px;
+    padding: 22px 20px 20px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Top caption */
+  .fc-caption {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.1rem, 4.5vw, 1.35rem);
+    font-weight: 700;
+    color: #fff;
+    text-align: center;
+    line-height: 1.3;
+    text-shadow: 0 2px 18px rgba(255,107,149,0.7), 0 0 40px rgba(192,132,252,0.3);
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 0.45s ease, transform 0.45s cubic-bezier(0.34,1.4,0.64,1);
+    min-height: 2rem;
+  }
+  .fc-caption.fc-cap-hide {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  .fc-caption.fc-cap-shake {
+    animation: fcCapShake 0.5s ease;
+  }
+  @keyframes fcCapShake {
+    0%,100%{ transform: translateX(0) rotate(0); }
+    20%    { transform: translateX(-5px) rotate(-1deg); }
+    40%    { transform: translateX(5px)  rotate(1deg);  }
+    60%    { transform: translateX(-3px) rotate(-0.5deg); }
+    80%    { transform: translateX(3px)  rotate(0.5deg);  }
+  }
+
+  /* Cake stage container */
+  .fc-cake-stage {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    flex-shrink: 0;
+  }
+
+  /* SVG sizing */
+  #fc-svg {
+    width: 220px;
+    height: 230px;
+    overflow: visible;
+    filter: drop-shadow(0 8px 24px rgba(124,58,237,0.35));
+  }
+
+  /* Ambient glow ring */
+  .fc-glow-ring {
+    position: absolute;
+    width: 190px; height: 190px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,107,149,0.2) 0%, rgba(192,132,252,0.1) 55%, transparent 75%);
+    animation: fcGlowPulse 2.6s ease-in-out infinite;
+    pointer-events: none;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -52%);
+  }
+  @keyframes fcGlowPulse {
+    0%,100% { opacity: 0.65; transform: translate(-50%,-52%) scale(1);    }
+    50%     { opacity: 1;    transform: translate(-50%,-52%) scale(1.18);  }
+  }
+
+  /* Candle flames */
+  .fc-flame {
+    transform-origin: 50% 90%;
+    animation: fcFlicker 0.85s ease-in-out infinite alternate;
+  }
+  #fc-flame-B { animation-duration: 0.7s;  animation-delay: -0.28s; }
+  #fc-flame-C { animation-duration: 1.0s;  animation-delay: -0.55s; }
+  @keyframes fcFlicker {
+    0%   { transform: scaleX(1)    scaleY(1)    rotate(0deg);   opacity: 1;   }
+    20%  { transform: scaleX(0.86) scaleY(1.1)  rotate(-2.5deg); opacity: 0.9; }
+    45%  { transform: scaleX(1.08) scaleY(0.93) rotate(2deg);   opacity: 1;   }
+    70%  { transform: scaleX(0.9)  scaleY(1.07) rotate(-1.5deg); opacity: 0.92;}
+    100% { transform: scaleX(1.05) scaleY(0.96) rotate(2.5deg);  opacity: 0.88;}
+  }
+
+  /* Flame halos */
+  .fc-flame-halo {
+    animation: fcHaloPulse 1.1s ease-in-out infinite alternate;
+  }
+  @keyframes fcHaloPulse {
+    from { opacity: 0.08; }
+    to   { opacity: 0.22; }
+  }
+
+  /* Smoke */
+  .fc-smoke {
+    pointer-events: none;
+  }
+  .fc-smoke-anim {
+    animation: fcSmokeDrift 2s ease-out forwards;
+  }
+  @keyframes fcSmokeDrift {
+    0%   { opacity: 0.85; transform: translateY(0)    scaleX(1);   }
+    40%  { opacity: 0.5;  transform: translateY(-16px) scaleX(1.4); }
+    100% { opacity: 0;    transform: translateY(-36px) scaleX(2);   }
+  }
+
+  /* Knife animation */
+  .fc-knife-enter {
+    animation: fcKnifeDrop 1s cubic-bezier(0.2, 1, 0.3, 1) forwards;
+  }
+  @keyframes fcKnifeDrop {
+    0%   { opacity: 0; transform: translateY(-90px) translateX(55px) rotate(-22deg); }
+    18%  { opacity: 1; }
+    65%  { opacity: 1; transform: translateY(0px)   translateX(0px)  rotate(-4deg);  }
+    80%  { transform: translateY(3px) translateX(0px) rotate(-3deg); }
+    100% { opacity: 1; transform: translateY(0px)   translateX(0px)  rotate(-4deg);  }
+  }
+  .fc-knife-raise {
+    animation: fcKnifeRaise 0.65s cubic-bezier(0.4,0,0.2,1) forwards;
+  }
+  @keyframes fcKnifeRaise {
+    0%   { opacity: 1; transform: translateY(0)    rotate(-4deg); }
+    100% { opacity: 0; transform: translateY(-70px) rotate(-20deg); }
+  }
+
+  /* Cake half split */
+  #fc-half-L {
+    transition: transform 0s;
+  }
+  #fc-half-L.fc-split {
+    transition: transform 0.75s cubic-bezier(0.34, 1.3, 0.64, 1);
+    transform: translateX(-13px);
+  }
+  /* Cake wobble on impact */
+  .fc-wobble {
+    animation: fcWobble 0.55s ease !important;
+  }
+  @keyframes fcWobble {
+    0%,100%{ transform: translateX(0); }
+    18%  { transform: translateX(-6px) rotate(-1deg); }
+    36%  { transform: translateX(5px)  rotate(0.8deg);}
+    54%  { transform: translateX(-3px) rotate(-0.5deg);}
+    72%  { transform: translateX(2px)  rotate(0.3deg);}
+  }
+
+  /* "Cut it" button wrapper */
+  #fc-btn-wrap {
+    display: flex;
+    justify-content: center;
+  }
+
+  /* Final message elements */
+  #fc-final-msg {
+    display: flex;
+  }
+  .fc-love-note {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: clamp(0.85rem, 3.5vw, 0.95rem);
+    color: rgba(255,255,255,0.8);
+    text-align: center;
+    line-height: 1.7;
+    padding: 0 6px;
+    text-shadow: 0 1px 10px rgba(192,132,252,0.4);
+  }
+  .fc-love-highlight {
+    color: var(--blush);
+    font-weight: 700;
+    font-style: normal;
+  }
+  .fc-emoji-row {
+    font-size: 1.45rem;
+    display: flex;
+    gap: 10px;
+    animation: floatBob 2.2s ease-in-out infinite;
+  }
+
+  /* =============================================
+     RIPPLE EFFECT ON BUTTON CLICK
+  ============================================= */
+  .ripple {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.35);
+    animation: rippleAnim 0.55s linear;
+    pointer-events: none;
+    transform: scale(0);
+  }
+
+  @keyframes rippleAnim {
+    to { transform: scale(4); opacity: 0; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============================================
+     BACKGROUND LAYERS
+============================================= -->
+<div id="bg-gradient"></div>
+<canvas id="hearts-canvas"></canvas>
+<canvas id="confetti-canvas"></canvas>
+
+<!-- ============================================
+     HIDDEN AUDIO
+============================================= -->
+<audio id="bg-music" loop src="music.mp3" preload="auto"></audio>
+
+<!-- ============================================
+     APP
+============================================= -->
+<div id="app">
+
+  <!-- SCREEN 1 -->
+  <div class="screen active" id="screen-1">
+    <div class="card">
+      <div class="emoji-badge">💖</div>
+      <h1 class="headline">Ready for a<br><em>small surprise?</em></h1>
+      <div class="video-wrap">
+        <img src="https://media.tenor.com/N2zrXlml-qYAAAAi/christmas-birthday.gif" alt="Screen 1" />
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-yes" onclick="goTo(3)">Yes 💕</button>
+        <button class="btn btn-no" id="no-btn-1" onclick="handleNo()">No 🙄</button>
+      </div>
+      <div class="progress-dots" id="dots"></div>
+    </div>
+  </div>
+
+  <!-- SCREEN 2 (No clicked) -->
+  <div class="screen" id="screen-2">
+    <div class="card">
+      <div class="emoji-badge" style="animation-duration:0.6s">😡</div>
+      <h1 class="headline angry-text">How dare you 😡<br>Click <em>Yes!</em></h1>
+      <div class="video-wrap">
+        <img src="https://media.tenor.com/Sc4l2qxKM9YAAAAm/huh-confused.webp" alt="Screen 2" />
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-yes btn-single" onclick="goTo(3)">Okay okay, Yes 😅</button>
+      </div>
+      <div class="progress-dots"></div>
+    </div>
+  </div>
+
+  <!-- SCREEN 3 -->
+  <div class="screen" id="screen-3">
+    <div class="card">
+      <div class="emoji-badge">💙</div>
+      <h1 class="headline">Do you<br><em>love me?</em></h1>
+      <div class="video-wrap">
+        <img src="https://media.tenor.com/J1RlH1ppxRgAAAAm/sad-sappy.webp" alt="Screen 3" />
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-yes" onclick="goTo(4)">Yes 😍</button>
+        <button class="btn btn-yes" onclick="goTo(4)">Yes! 💯</button>
+      </div>
+      <div class="progress-dots"></div>
+    </div>
+  </div>
+
+  <!-- SCREEN 4 -->
+  <div class="screen" id="screen-4">
+    <div class="card">
+      <div class="emoji-badge">😏</div>
+      <h1 class="headline"><em>Thanks</em> 😏</h1>
+      <div class="video-wrap">
+        <img src="https://media.tenor.com/DpJdyKQKgYkAAAAm/cat-jump.webp" alt="Screen 4" />
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-yes btn-wide" onclick="goTo(5)">Click here ✨</button>
+      </div>
+      <div class="progress-dots"></div>
+    </div>
+  </div>
+
+  <!-- SCREEN 5 -->
+  <div class="screen" id="screen-5">
+    <div class="card">
+      <div class="emoji-badge">😊</div>
+      <h1 class="headline">Do you know?<br><em>I love your smile</em> 😊</h1>
+      <div class="video-wrap">
+        <img src="https://media.tenor.com/UcZyRYM47ocAAAAM/smiling-cat-happy-cat.gif" alt="Screen 5" />
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-yes" onclick="goTo(6)">Yes 🥹</button>
+        <button class="btn btn-yes" onclick="goTo(6)">Ofc Yes 💖</button>
+      </div>
+      <div class="progress-dots"></div>
+    </div>
+  </div>
+
+  <!-- SCREEN 6 -->
+  <div class="screen" id="screen-6">
+    <div class="card">
+      <div class="emoji-badge">👑</div>
+      <h1 class="headline">Oh, today is my<br><em>princess's birthday</em> 👑</h1>
+      <div class="video-wrap">
+        <img src="https://media.tenor.com/pmPh1vlMjMoAAAA1/kitten-cat.webp" alt="Screen 6" />
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-yes btn-wide" onclick="goToFinal()">Yes!! 🎉</button>
+      </div>
+      <div class="progress-dots"></div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       FINAL SCREEN — INTERACTIVE BIRTHDAY CAKE
+  ═══════════════════════════════════════════ -->
+  <div class="screen" id="screen-final">
+    <div class="card" id="final-card">
+
+      <!-- ── TOP CAPTION (changes each step) ── -->
+      <div id="fc-caption" class="fc-caption">Blow the candles 🎂</div>
+
+      <!-- ── CAKE STAGE ── -->
+      <div id="fc-cake-stage" class="fc-cake-stage">
+
+        <!-- Ambient radial glow -->
+        <div class="fc-glow-ring" id="fc-glow-ring"></div>
+
+        <!-- ── THE CAKE SVG ── -->
+        <svg id="fc-svg" viewBox="0 0 220 230" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <!-- Flame -->
+            <radialGradient id="fc-flameG" cx="50%" cy="75%" r="55%">
+              <stop offset="0%"   stop-color="#fffde7"/>
+              <stop offset="35%"  stop-color="#ffca28"/>
+              <stop offset="70%"  stop-color="#ff7043"/>
+              <stop offset="100%" stop-color="#ff7043" stop-opacity="0"/>
+            </radialGradient>
+            <radialGradient id="fc-flameInner" cx="50%" cy="65%" r="45%">
+              <stop offset="0%" stop-color="#fff9c4"/>
+              <stop offset="100%" stop-color="#ffe082" stop-opacity="0"/>
+            </radialGradient>
+            <!-- Cake tiers -->
+            <linearGradient id="fc-bot" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#f9a8c9"/>
+              <stop offset="100%" stop-color="#db4f7a"/>
+            </linearGradient>
+            <linearGradient id="fc-mid" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#d87dbf"/>
+              <stop offset="100%" stop-color="#a83fa0"/>
+            </linearGradient>
+            <linearGradient id="fc-top" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#b97bfa"/>
+              <stop offset="100%" stop-color="#7c22e8"/>
+            </linearGradient>
+            <linearGradient id="fc-frost" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#ffffff"/>
+              <stop offset="100%" stop-color="#f5e0ff"/>
+            </linearGradient>
+            <!-- Plate -->
+            <radialGradient id="fc-plate" cx="50%" cy="40%" r="60%">
+              <stop offset="0%" stop-color="#e8c8f5"/>
+              <stop offset="100%" stop-color="#c48fe0"/>
+            </radialGradient>
+            <!-- Smoke -->
+            <radialGradient id="fc-smoke" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#e0d0f0" stop-opacity="0.7"/>
+              <stop offset="100%" stop-color="#e0d0f0" stop-opacity="0"/>
+            </radialGradient>
+            <!-- Knife metal -->
+            <linearGradient id="fc-blade" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stop-color="#c8c8c8"/>
+              <stop offset="45%" stop-color="#f0f0f0"/>
+              <stop offset="100%" stop-color="#a0a0a0"/>
+            </linearGradient>
+            <!-- Glow filter -->
+            <filter id="fc-glow-f" x="-40%" y="-40%" width="180%" height="180%">
+              <feGaussianBlur stdDeviation="3" result="blur"/>
+              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+            <filter id="fc-soft" x="-20%" y="-20%" width="140%" height="140%">
+              <feGaussianBlur stdDeviation="1.5"/>
+            </filter>
+          </defs>
+
+          <!-- ── PLATE ── -->
+          <ellipse cx="110" cy="208" rx="82" ry="12" fill="url(#fc-plate)" opacity="0.7"/>
+          <ellipse cx="110" cy="207" rx="75" ry="8"  fill="rgba(255,255,255,0.18)"/>
+
+          <!-- ══ LEFT CAKE HALF (slides left on cut) ══ -->
+          <g id="fc-half-L">
+            <!-- BOTTOM TIER -->
+            <rect x="22" y="155" width="176" height="52" rx="7" fill="url(#fc-bot)"/>
+            <!-- frosting strip -->
+            <rect x="22" y="152" width="176" height="9" rx="4" fill="url(#fc-frost)" opacity="0.96"/>
+            <!-- frosting drips -->
+            <ellipse cx="45"  cy="154" rx="7"  ry="5" fill="url(#fc-frost)" opacity="0.88"/>
+            <ellipse cx="72"  cy="153" rx="8"  ry="5" fill="url(#fc-frost)" opacity="0.85"/>
+            <ellipse cx="100" cy="154" rx="9"  ry="6" fill="url(#fc-frost)" opacity="0.9"/>
+            <ellipse cx="130" cy="153" rx="8"  ry="5" fill="url(#fc-frost)" opacity="0.85"/>
+            <ellipse cx="158" cy="154" rx="7"  ry="5" fill="url(#fc-frost)" opacity="0.88"/>
+            <ellipse cx="185" cy="155" rx="6"  ry="4" fill="url(#fc-frost)" opacity="0.75"/>
+            <!-- dot decorations bottom -->
+            <circle cx="50"  cy="172" r="3.5" fill="rgba(255,255,255,0.35)"/>
+            <circle cx="80"  cy="176" r="3"   fill="rgba(255,214,230,0.5)"/>
+            <circle cx="110" cy="170" r="4"   fill="rgba(255,255,255,0.3)"/>
+            <circle cx="140" cy="175" r="3"   fill="rgba(255,214,230,0.45)"/>
+            <circle cx="168" cy="171" r="3.5" fill="rgba(255,255,255,0.32)"/>
+            <!-- tiny sprinkles -->
+            <rect x="58"  y="163" width="6" height="2.5" rx="1" fill="#ffb3c6" opacity="0.6" transform="rotate(-30,61,164)"/>
+            <rect x="92"  y="167" width="6" height="2.5" rx="1" fill="#c084fc" opacity="0.6" transform="rotate(20,95,168)"/>
+            <rect x="125" y="162" width="6" height="2.5" rx="1" fill="#ffb3c6" opacity="0.6" transform="rotate(15,128,163)"/>
+            <rect x="152" y="168" width="5" height="2"   rx="1" fill="#c084fc" opacity="0.55" transform="rotate(-20,154,169)"/>
+
+            <!-- MIDDLE TIER -->
+            <rect x="37" y="103" width="146" height="52" rx="6" fill="url(#fc-mid)"/>
+            <rect x="37" y="100" width="146" height="9"  rx="4" fill="url(#fc-frost)" opacity="0.96"/>
+            <ellipse cx="58"  cy="102" rx="7" ry="5" fill="url(#fc-frost)" opacity="0.85"/>
+            <ellipse cx="88"  cy="101" rx="9" ry="5" fill="url(#fc-frost)" opacity="0.88"/>
+            <ellipse cx="120" cy="102" rx="9" ry="5" fill="url(#fc-frost)" opacity="0.88"/>
+            <ellipse cx="152" cy="101" rx="7" ry="5" fill="url(#fc-frost)" opacity="0.82"/>
+            <ellipse cx="174" cy="103" rx="6" ry="4" fill="url(#fc-frost)" opacity="0.72"/>
+            <!-- dot decorations mid -->
+            <circle cx="65"  cy="120" r="3"   fill="rgba(255,255,255,0.3)"/>
+            <circle cx="110" cy="118" r="3.5" fill="rgba(255,214,230,0.45)"/>
+            <circle cx="150" cy="122" r="3"   fill="rgba(255,255,255,0.3)"/>
+            <!-- sprinkles mid -->
+            <rect x="78"  y="112" width="6" height="2.5" rx="1" fill="#ffe082" opacity="0.6" transform="rotate(10,81,113)"/>
+            <rect x="128" y="115" width="5" height="2"   rx="1" fill="#80deea" opacity="0.55" transform="rotate(-15,130,116)"/>
+
+            <!-- TOP TIER -->
+            <rect x="58" y="58" width="104" height="46" rx="6" fill="url(#fc-top)"/>
+            <rect x="58" y="55" width="104" height="9"  rx="4" fill="url(#fc-frost)" opacity="0.96"/>
+            <ellipse cx="76"  cy="57" rx="7" ry="4.5" fill="url(#fc-frost)" opacity="0.85"/>
+            <ellipse cx="110" cy="56" rx="8" ry="5"   fill="url(#fc-frost)" opacity="0.9"/>
+            <ellipse cx="144" cy="57" rx="7" ry="4.5" fill="url(#fc-frost)" opacity="0.85"/>
+
+            <!-- ── HBD TEXT on top tier ── -->
+            <text id="fc-hbd-text"
+              x="110" y="84"
+              font-family="'Playfair Display', Georgia, serif"
+              font-size="13" font-weight="700" font-style="italic"
+              text-anchor="middle"
+              fill="#fff"
+              filter="url(#fc-glow-f)"
+              opacity="0.95">HBD Sai</text>
+            <!-- subtle outline version for depth -->
+            <text x="110" y="84"
+              font-family="'Playfair Display', Georgia, serif"
+              font-size="13" font-weight="700" font-style="italic"
+              text-anchor="middle"
+              fill="none" stroke="rgba(255,214,230,0.4)" stroke-width="0.5"
+              opacity="0.6">HBD Sai</text>
+
+            <!-- heart accents on top tier -->
+            <text x="72"  y="76" font-size="8" fill="#ffd6e8" opacity="0.75">♥</text>
+            <text x="143" y="78" font-size="7" fill="#fff"    opacity="0.55">♥</text>
+
+            <!-- CUT REVEAL LINE (animated in JS) -->
+            <line id="fc-cut-line"
+              x1="110" y1="55" x2="110" y2="207"
+              stroke="rgba(255,255,255,0.85)" stroke-width="1.5"
+              stroke-dasharray="5 4" opacity="0"
+              style="transition: opacity 0.4s ease;"/>
+          </g>
+
+          <!-- ══ CANDLES ══ -->
+          <!-- Candle A -->
+          <g id="fc-candle-A">
+            <rect x="82"  y="38" width="9" height="20" rx="3.5" fill="#ffb3c6"/>
+            <rect x="82"  y="38" width="9" height="6"  rx="2"   fill="#ff6b95" opacity="0.5"/>
+            <line x1="86.5" y1="38" x2="86.5" y2="33" stroke="#3e2208" stroke-width="1.8" stroke-linecap="round"/>
+            <g id="fc-flame-A" class="fc-flame">
+              <ellipse cx="86.5" cy="27" rx="5.5" ry="8"   fill="url(#fc-flameG)"     opacity="0.95" filter="url(#fc-glow-f)"/>
+              <ellipse cx="86.5" cy="29" rx="2.5" ry="4"   fill="url(#fc-flameInner)" opacity="0.85"/>
+              <ellipse cx="86.5" cy="27" rx="11"  ry="11"  fill="#ffca28" opacity="0.12" class="fc-flame-halo"/>
+            </g>
+            <g id="fc-smoke-A" class="fc-smoke" opacity="0">
+              <ellipse cx="86.5" cy="25" rx="3"   ry="5.5" fill="url(#fc-smoke)"/>
+              <ellipse cx="88"   cy="17" rx="2.5" ry="4.5" fill="url(#fc-smoke)" opacity="0.65"/>
+              <ellipse cx="85"   cy="10" rx="2"   ry="3.5" fill="url(#fc-smoke)" opacity="0.35"/>
+            </g>
+          </g>
+
+          <!-- Candle B (tallest, center) -->
+          <g id="fc-candle-B">
+            <rect x="106" y="33" width="9" height="25" rx="3.5" fill="#c084fc"/>
+            <rect x="106" y="33" width="9" height="7"  rx="2"   fill="#7c3aed" opacity="0.5"/>
+            <line x1="110.5" y1="33" x2="110.5" y2="27" stroke="#3e2208" stroke-width="1.8" stroke-linecap="round"/>
+            <g id="fc-flame-B" class="fc-flame">
+              <ellipse cx="110.5" cy="21" rx="6"   ry="9"   fill="url(#fc-flameG)"     opacity="0.97" filter="url(#fc-glow-f)"/>
+              <ellipse cx="110.5" cy="23" rx="2.8" ry="4.5" fill="url(#fc-flameInner)" opacity="0.88"/>
+              <ellipse cx="110.5" cy="21" rx="13"  ry="13"  fill="#ffca28" opacity="0.14" class="fc-flame-halo"/>
+            </g>
+            <g id="fc-smoke-B" class="fc-smoke" opacity="0">
+              <ellipse cx="110.5" cy="20" rx="3"   ry="6"   fill="url(#fc-smoke)"/>
+              <ellipse cx="112"   cy="11" rx="2.5" ry="4.5" fill="url(#fc-smoke)" opacity="0.62"/>
+              <ellipse cx="109"   cy="4"  rx="2"   ry="3.5" fill="url(#fc-smoke)" opacity="0.32"/>
+            </g>
+          </g>
+
+          <!-- Candle C -->
+          <g id="fc-candle-C">
+            <rect x="130" y="38" width="9" height="20" rx="3.5" fill="#ffb3c6"/>
+            <rect x="130" y="38" width="9" height="6"  rx="2"   fill="#ff6b95" opacity="0.5"/>
+            <line x1="134.5" y1="38" x2="134.5" y2="33" stroke="#3e2208" stroke-width="1.8" stroke-linecap="round"/>
+            <g id="fc-flame-C" class="fc-flame">
+              <ellipse cx="134.5" cy="27" rx="5.5" ry="8"   fill="url(#fc-flameG)"     opacity="0.95" filter="url(#fc-glow-f)"/>
+              <ellipse cx="134.5" cy="29" rx="2.5" ry="4"   fill="url(#fc-flameInner)" opacity="0.85"/>
+              <ellipse cx="134.5" cy="27" rx="11"  ry="11"  fill="#ffca28" opacity="0.12" class="fc-flame-halo"/>
+            </g>
+            <g id="fc-smoke-C" class="fc-smoke" opacity="0">
+              <ellipse cx="134.5" cy="25" rx="3"   ry="5.5" fill="url(#fc-smoke)"/>
+              <ellipse cx="136"   cy="17" rx="2.5" ry="4.5" fill="url(#fc-smoke)" opacity="0.65"/>
+              <ellipse cx="133"   cy="10" rx="2"   ry="3.5" fill="url(#fc-smoke)" opacity="0.35"/>
+            </g>
+          </g>
+
+          <!-- ══ KNIFE (hidden, animates in during cut) ══ -->
+          <g id="fc-knife" style="opacity:0; transform-origin:110px 50px;">
+            <!-- handle -->
+            <rect x="104" y="-38" width="12" height="28" rx="5" fill="#4a2c0a"/>
+            <rect x="105" y="-36" width="4"  height="24" rx="2" fill="#6b4020" opacity="0.6"/>
+            <!-- bolster -->
+            <rect x="102" y="-12" width="16" height="6" rx="2.5" fill="#9a9a9a"/>
+            <!-- blade -->
+            <path d="M104,-6 L116,-6 L114,68 L106,68 Z" fill="url(#fc-blade)"/>
+            <!-- cutting edge bevel -->
+            <path d="M114,-4 L112,66" stroke="rgba(255,255,255,0.7)" stroke-width="1" stroke-linecap="round"/>
+            <!-- reflection -->
+            <path d="M106,0 L107,60" stroke="rgba(255,255,255,0.4)" stroke-width="0.8" stroke-linecap="round"/>
+          </g>
+
+        </svg><!-- end #fc-svg -->
+      </div><!-- end #fc-cake-stage -->
+
+      <!-- ── CUT BUTTON (shown in step 4) ── -->
+      <div id="fc-btn-wrap" style="opacity:0; transform:translateY(12px); transition:opacity 0.5s ease, transform 0.5s ease; pointer-events:none;">
+        <button id="fc-cut-btn" class="btn btn-yes" onclick="fcCutCake()" style="padding:14px 36px; font-size:1rem; max-width:none;">
+          Cut it 🔪
+        </button>
+      </div>
+
+      <!-- ── FINAL EMOTIONAL MESSAGE (step 6) ── -->
+      <div id="fc-final-msg" style="
+        display:none; opacity:0;
+        transform: translateY(28px) scale(0.94);
+        transition: opacity 1s cubic-bezier(0.34,1.2,0.64,1), transform 1s cubic-bezier(0.34,1.2,0.64,1);
+        flex-direction:column; align-items:center; gap:16px; width:100%;
+      ">
+        <div class="final-image-wrap">
+          <img src="https://media.tenor.com/pmPh1vlMjMoAAAA1/kitten-cat.webp" alt="Princess" />
+        </div>
+        <div class="birthday-text">Happy Birthday<br>Princess 💖</div>
+        <div class="fc-love-note">
+          I may not be there beside you…<br>
+          but you will always be<br>
+          <span class="fc-love-highlight">in my heart 🥹</span>
+        </div>
+        <div class="fc-emoji-row">🎂 🎁 🎀 🎊 💫</div>
+      </div>
+
+    </div><!-- end #final-card -->
+  </div>
+
+</div><!-- end #app -->
+
+<script>
+/* =============================================
+   STATE
+============================================= */
+let currentScreen = 1;
+let noClickCount = 0;
+const TOTAL_STEPS = 6; // screens 1–6 + final
+
+/* =============================================
+   PROGRESS DOTS INIT
+============================================= */
+function buildDots() {
+  // We show dots on screens 1, 3, 4, 5, 6
+  const dotsContainers = document.querySelectorAll('.progress-dots');
+  dotsContainers.forEach(container => {
+    container.innerHTML = '';
+    for (let i = 0; i < TOTAL_STEPS; i++) {
+      const d = document.createElement('div');
+      d.className = 'dot';
+      container.appendChild(d);
+    }
+  });
+}
+
+function updateDots(step) {
+  // step 1-based: 1=screen1, 2=screen2, 3=screen3 ... 6=screen6
+  document.querySelectorAll('.progress-dots').forEach(container => {
+    const dots = container.querySelectorAll('.dot');
+    dots.forEach((dot, i) => {
+      dot.classList.remove('active','done');
+      if (i < step - 1) dot.classList.add('done');
+      else if (i === step - 1) dot.classList.add('active');
+    });
+  });
+}
+
+/* =============================================
+   SCREEN TRANSITIONS
+============================================= */
+function goTo(screenNumber) {
+  const current = document.querySelector('.screen.active');
+  const next = document.getElementById('screen-' + screenNumber);
+  if (!next || !current || current === next) return;
+
+  current.classList.add('exiting');
+  setTimeout(() => {
+    current.classList.remove('active','exiting');
+    next.classList.add('active');
+    currentScreen = screenNumber;
+    const stepMap = {1:1, 2:1, 3:2, 4:3, 5:4, 6:5};
+    if (stepMap[screenNumber]) updateDots(stepMap[screenNumber]);
+    // Autoplay video in new screen
+    const vid = next.querySelector('video');
+    if (vid) { vid.currentTime = 0; vid.play().catch(()=>{}); }
+  }, 300);
+}
+
+function goToFinal() {
+  const current = document.querySelector('.screen.active');
+  const next = document.getElementById('screen-final');
+  if (!current || !next) return;
+
+  current.classList.add('exiting');
+  setTimeout(() => {
+    current.classList.remove('active','exiting');
+    next.classList.add('active');
+    currentScreen = 'final';
+    startFinalEffects();
+  }, 300);
+}
+
+/* =============================================
+   NO BUTTON HANDLER
+============================================= */
+function handleNo() {
+  noClickCount++;
+  const noBtn = document.getElementById('no-btn-1');
+
+  if (noClickCount >= 2) {
+    // After 2 Nos, force to screen 2
+    goTo(2);
+    return;
+  }
+
+  // Escape the button playfully
+  noBtn.style.animation = 'shake 0.4s ease';
+  setTimeout(() => { noBtn.style.animation = ''; }, 400);
+
+  // Move button to a random nearby position
+  const maxX = 80, maxY = 40;
+  const rx = (Math.random() - 0.5) * maxX * 2;
+  const ry = (Math.random() - 0.5) * maxY * 2;
+  noBtn.style.transform = `translate(${rx}px, ${ry}px)`;
+  noBtn.style.transition = 'transform 0.3s cubic-bezier(0.34,1.56,0.64,1)';
+  noBtn.textContent = noClickCount === 1 ? 'No?? 😤' : 'No!! 😡';
+}
+
+/* =============================================
+   RIPPLE ON ALL BUTTONS
+============================================= */
+document.addEventListener('click', e => {
+  const btn = e.target.closest('.btn');
+  if (!btn) return;
+  const ripple = document.createElement('span');
+  ripple.className = 'ripple';
+  const rect = btn.getBoundingClientRect();
+  const size = Math.max(rect.width, rect.height);
+  ripple.style.cssText = `width:${size}px;height:${size}px;left:${e.clientX-rect.left-size/2}px;top:${e.clientY-rect.top-size/2}px`;
+  btn.appendChild(ripple);
+  setTimeout(() => ripple.remove(), 560);
+});
+
+/* =============================================
+   FINAL EFFECTS — INTERACTIVE CAKE SEQUENCE
+============================================= */
+function startFinalEffects() {
+  updateDots(6);
+  fcRunSequence();
+}
+
+/* ── Step state ── */
+let fcStep = 0;
+let fcCutDone = false;
+
+function fcRunSequence() {
+  fcStep = 1;
+
+  // STEP 1: Show cake, lit candles, caption "Blow the candles 🎂"
+  // Caption is already set in HTML, just fade it in elegantly
+  const caption = document.getElementById('fc-caption');
+  caption.style.opacity = '0';
+  caption.style.transform = 'translateY(12px)';
+  setTimeout(() => {
+    caption.style.transition = 'opacity 0.6s ease, transform 0.6s cubic-bezier(0.34,1.4,0.64,1)';
+    caption.style.opacity = '1';
+    caption.style.transform = 'translateY(0)';
+  }, 300);
+
+  // STEP 2 (+2s): Change text to "Blow it properly 😤" + shake
+  setTimeout(() => {
+    fcStep = 2;
+    fcSetCaption('Blow it properly 😤', true);
+  }, 2000);
+
+  // STEP 3 (+2s after step 2 = 4s): Blow candles off + smoke
+  setTimeout(() => {
+    fcStep = 3;
+    fcSetCaption('🌬️ Whoosh…', false);
+    fcBlowCandles();
+  }, 4000);
+
+  // STEP 4 (+1.4s after blow = 5.4s): "Now cut the cake 🔪" + show Cut button
+  setTimeout(() => {
+    fcStep = 4;
+    fcSetCaption('Now cut the cake 🔪', false);
+    fcShowCutBtn();
+  }, 5400);
+}
+
+/* Change caption with smooth crossfade */
+function fcSetCaption(text, shake) {
+  const el = document.getElementById('fc-caption');
+  el.classList.add('fc-cap-hide');
+  setTimeout(() => {
+    el.textContent = text;
+    el.classList.remove('fc-cap-hide');
+    if (shake) {
+      void el.getBoundingClientRect();
+      el.classList.add('fc-cap-shake');
+      setTimeout(() => el.classList.remove('fc-cap-shake'), 550);
+    }
+  }, 460);
+}
+
+/* Blow out each candle with staggered timing */
+function fcBlowCandles() {
+  const pairs = [
+    ['fc-flame-A', 'fc-smoke-A'],
+    ['fc-flame-B', 'fc-smoke-B'],
+    ['fc-flame-C', 'fc-smoke-C'],
+  ];
+  pairs.forEach(([flameId, smokeId], i) => {
+    setTimeout(() => {
+      const flame = document.getElementById(flameId);
+      const smoke = document.getElementById(smokeId);
+
+      // Rapid flicker then die
+      flame.style.animation = 'fcFlicker 0.1s ease-in-out 4';
+      setTimeout(() => {
+        flame.style.animation = 'none';
+        flame.style.transition = 'opacity 0.35s ease, transform 0.35s ease';
+        flame.style.opacity = '0';
+        flame.style.transform = 'scaleY(0.1) scaleX(1.8) translateY(5px)';
+
+        // Smoke appears
+        smoke.style.opacity = '1';
+        smoke.classList.add('fc-smoke-anim');
+        setTimeout(() => { smoke.style.opacity = '0'; }, 2000);
+      }, 400);
+    }, i * 200);
+  });
+}
+
+/* Show the Cut button */
+function fcShowCutBtn() {
+  const wrap = document.getElementById('fc-btn-wrap');
+  wrap.style.pointerEvents = 'auto';
+  wrap.style.opacity = '1';
+  wrap.style.transform = 'translateY(0)';
+}
+
+/* STEP 5: User clicks "Cut it" */
+function fcCutCake() {
+  if (fcCutDone) return;
+  fcCutDone = true;
+
+  // Disable button immediately
+  const btn = document.getElementById('fc-cut-btn');
+  btn.disabled = true;
+  btn.style.opacity = '0.6';
+
+  // Update caption
+  fcSetCaption('Cutting… 🔪✨', false);
+
+  // Show knife dropping in
+  const knife = document.getElementById('fc-knife');
+  knife.style.opacity = '1';
+  knife.classList.add('fc-knife-enter');
+
+  // After knife hits (~0.7s): show cut line + wobble cake
+  setTimeout(() => {
+    // Cut dashed line
+    const cutLine = document.getElementById('fc-cut-line');
+    cutLine.style.opacity = '0.9';
+
+    // Wobble
+    const halfL = document.getElementById('fc-half-L');
+    halfL.classList.add('fc-wobble');
+    setTimeout(() => halfL.classList.remove('fc-wobble'), 600);
+  }, 680);
+
+  // After wobble (~1.1s): split cake halves
+  setTimeout(() => {
+    const halfL = document.getElementById('fc-half-L');
+    halfL.classList.add('fc-split');
+  }, 1100);
+
+  // Raise knife away (~1.5s)
+  setTimeout(() => {
+    const knife = document.getElementById('fc-knife');
+    knife.classList.remove('fc-knife-enter');
+    knife.classList.add('fc-knife-raise');
+  }, 1500);
+
+  // STEP 6 (+2.2s): Reveal final message
+  setTimeout(() => {
+    fcRevealMessage();
+  }, 2200);
+}
+
+/* STEP 6: Hide cake, show final emotional message */
+function fcRevealMessage() {
+  fcSetCaption('', false);
+
+  const stage  = document.getElementById('fc-cake-stage');
+  const btnWrp = document.getElementById('fc-btn-wrap');
+  const msg    = document.getElementById('fc-final-msg');
+
+  // Fade out cake stage + button
+  stage.style.transition  = 'opacity 0.7s ease, transform 0.7s ease';
+  stage.style.opacity     = '0';
+  stage.style.transform   = 'scale(0.88) translateY(-8px)';
+  btnWrp.style.transition = 'opacity 0.4s ease';
+  btnWrp.style.opacity    = '0';
+
+  setTimeout(() => {
+    stage.style.display  = 'none';
+    btnWrp.style.display = 'none';
+
+    // Show final message
+    msg.style.display = 'flex';
+    void msg.getBoundingClientRect(); // reflow
+    msg.style.opacity   = '1';
+    msg.style.transform = 'translateY(0) scale(1)';
+
+    // Confetti burst
+    const cc = document.getElementById('confetti-canvas');
+    cc.style.display = 'block';
+    startConfetti(cc);
+
+    // Music fade in
+    const music = document.getElementById('bg-music');
+    music.volume = 0;
+    music.play().catch(() => {});
+    let vol = 0;
+    const fi = setInterval(() => {
+      vol = Math.min(vol + 0.016, 1);
+      music.volume = vol;
+      if (vol >= 1) clearInterval(fi);
+    }, 110);
+  }, 700);
+}
+
+/* =============================================
+   CONFETTI ANIMATION
+============================================= */
+function startConfetti(canvas) {
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  const colors = ['#ff6b95','#c084fc','#ffb3c6','#fbbf24','#34d399','#60a5fa','#f472b6','#fff'];
+  const shapes = ['rect','circle','heart'];
+  const particles = [];
+
+  for (let i = 0; i < 160; i++) {
+    particles.push({
+      x: Math.random() * canvas.width,
+      y: -Math.random() * canvas.height,
+      w: 6 + Math.random() * 10,
+      h: 4 + Math.random() * 8,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      shape: shapes[Math.floor(Math.random() * shapes.length)],
+      vx: (Math.random() - 0.5) * 3,
+      vy: 1.5 + Math.random() * 3,
+      rot: Math.random() * Math.PI * 2,
+      rotV: (Math.random() - 0.5) * 0.15,
+      alpha: 0.9 + Math.random() * 0.1,
+    });
+  }
+
+  function drawHeart(ctx, x, y, size) {
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.scale(size / 10, size / 10);
+    ctx.beginPath();
+    ctx.moveTo(0, -3);
+    ctx.bezierCurveTo(5, -8, 10, -3, 0, 5);
+    ctx.bezierCurveTo(-10, -3, -5, -8, 0, -3);
+    ctx.closePath();
+    ctx.restore();
+  }
+
+  let running = true;
+
+  function tick() {
+    if (!running) return;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles.forEach(p => {
+      p.x += p.vx;
+      p.y += p.vy;
+      p.rot += p.rotV;
+      if (p.y > canvas.height + 20) {
+        p.y = -20;
+        p.x = Math.random() * canvas.width;
+      }
+      ctx.save();
+      ctx.globalAlpha = p.alpha;
+      ctx.fillStyle = p.color;
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rot);
+      if (p.shape === 'rect') {
+        ctx.fillRect(-p.w/2, -p.h/2, p.w, p.h);
+      } else if (p.shape === 'circle') {
+        ctx.beginPath();
+        ctx.arc(0, 0, p.w/2, 0, Math.PI*2);
+        ctx.fill();
+      } else {
+        drawHeart(ctx, 0, 0, p.w);
+        ctx.fill();
+      }
+      ctx.restore();
+    });
+    requestAnimationFrame(tick);
+  }
+  tick();
+}
+
+/* =============================================
+   FLOATING HEARTS BACKGROUND
+============================================= */
+function initHearts() {
+  const canvas = document.getElementById('hearts-canvas');
+  const ctx = canvas.getContext('2d');
+
+  function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  const hearts = [];
+  const COUNT = 28;
+
+  for (let i = 0; i < COUNT; i++) {
+    hearts.push(spawnHeart(true));
+  }
+
+  function spawnHeart(randomY) {
+    return {
+      x: Math.random() * canvas.width,
+      y: randomY ? Math.random() * canvas.height : canvas.height + 20,
+      size: 8 + Math.random() * 18,
+      speed: 0.4 + Math.random() * 0.8,
+      drift: (Math.random() - 0.5) * 0.5,
+      alpha: 0.07 + Math.random() * 0.18,
+      wobble: Math.random() * Math.PI * 2,
+      wobbleSpeed: 0.012 + Math.random() * 0.018,
+    };
+  }
+
+  function drawHeart(ctx, x, y, size, alpha) {
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    ctx.fillStyle = '#ff6b95';
+    ctx.translate(x, y);
+    const s = size / 10;
+    ctx.scale(s, s);
+    ctx.beginPath();
+    ctx.moveTo(0, -3);
+    ctx.bezierCurveTo(5, -8, 10, -3, 0, 5);
+    ctx.bezierCurveTo(-10, -3, -5, -8, 0, -3);
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+  }
+
+  function tick() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    hearts.forEach((h, i) => {
+      h.wobble += h.wobbleSpeed;
+      h.y -= h.speed;
+      h.x += h.drift + Math.sin(h.wobble) * 0.4;
+      if (h.y < -30) {
+        hearts[i] = spawnHeart(false);
+      }
+      drawHeart(ctx, h.x, h.y, h.size, h.alpha);
+    });
+    requestAnimationFrame(tick);
+  }
+  tick();
+}
+
+/* =============================================
+   INIT
+============================================= */
+buildDots();
+updateDots(1);
+initHearts();
+
+// Try to autoplay first screen video
+window.addEventListener('load', () => {
+  const firstVid = document.querySelector('#screen-1 video');
+  if (firstVid) firstVid.play().catch(() => {});
+});
+</script>
+</body>
+</html>
