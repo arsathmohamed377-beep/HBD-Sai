@@ -1017,7 +1017,7 @@ section {
 ══════════════════════════════════════════ -->
 <button id="music-toggle" title="Toggle music" onclick="toggleMusic()">♪</button>
 <!-- 🎵 Replace music.mp3 with your audio file -->
-<audio id="bg-audio" loop preload="auto"><source src="music.mp3" type="audio/mpeg"/></audio>
+<audio id="bg-audio" loop preload="auto"><source src="song.mp3" type="audio/mpeg"/></audio>
 
 <!-- ══════════════════════════════════════════
      GATE A — BEFORE MIDNIGHT
@@ -1129,18 +1129,18 @@ section {
       <div class="letter-body">
         <!-- ✏️ Edit each line freely -->
         <span class="ll">Every morning my first thought is you.</span>
-        <span class="ll">The miles between us feel cruel sometimes —</span>
+        <span class="ll">The miles between us feel cruel sometimes </span>
         <span class="ll">but they have never once made me love you less.</span>
         <span class="ll">&nbsp;</span>
-        <span class="ll">Our late-night calls are my favourite hours.</span>
-        <span class="ll">The way you laugh — even through a screen —</span>
+        <span class="ll">Those silent video calls...</span>
+        <span class="ll">And the way you laugh even through a screen </span>
         <span class="ll">makes the whole world feel smaller and softer.</span>
         <span class="ll">&nbsp;</span>
         <span class="ll">On your birthday, I wish I could be right there beside you.</span>
         <span class="ll">To hold your hand. To see your eyes light up.</span>
         <span class="ll">To whisper happy birthday into your hair.</span>
         <span class="ll">&nbsp;</span>
-        <span class="ll">But know this with every heartbeat —</span>
+        <span class="ll">But know this with every heartbeat </span>
         <span class="ll">no distance can shrink how much I love you.</span>
         <span class="ll">You are my favourite person in every timezone. 🌹</span>
       </div>
@@ -1166,13 +1166,15 @@ section {
         <div class="tl-dot"></div>
         <div class="tl-date">Soon after</div>
         <div class="tl-title">The First Call 📞</div>
-        <div class="tl-desc">Hours felt like minutes. I stayed up way too late and had absolutely zero regrets.</div>
+        <div class="tl-desc">Our first call… I was too shy to talk, you got a little angry and cut it but somehow, even that became one of my favorite memories ❤️
+</div>
       </div>
       <div class="tl-item">
         <div class="tl-dot"></div>
         <div class="tl-date">When I knew</div>
         <div class="tl-title">First "I Love You" ❤️</div>
-        <div class="tl-desc">Three words. Infinite meaning. I have never been more certain of anything in my entire life.</div>
+        <div class="tl-desc">The first time you said ‘I love you’… you got shy, cut the call, and left me there smiling like an idiot ❤️
+</div>
       </div>
       <div class="tl-item">
         <div class="tl-dot"></div>
@@ -1230,7 +1232,7 @@ section {
       </div>
       <!-- ✏️ Change title -->
       <div class="audio-title">Our Song</div>
-      <div class="audio-sub">Close your eyes and listen…</div>
+      <div class="audio-sub">Close your eyes and listen…Dont try to stop because you can't</div>
       <div class="audio-player-ui">
         <button class="ap-play" id="ap-play-btn" onclick="toggleSecAudio()">▶</button>
         <div class="ap-bar" id="ap-bar" onclick="seekSecAudio(event)">
@@ -1290,42 +1292,138 @@ const ON_TIME_WINDOW = 60;  // seconds — "on time" grace window
    REASONS ARRAY — edit freely
 ════════════════════════════════════════════ */
 const REASONS = [
-  {icon:'😊', text:'The way your eyes smile before your lips do'},
-  {icon:'🌙', text:'You make late nights feel like the safest place'},
+  {icon:'😊', text:'The way your eyes smile before your words even do'},
+  {icon:'🌙', text:'Even a 2-minute conversation with you makes me happy ❤️'},
   {icon:'💬', text:'Every text from you is the best part of my day'},
   {icon:'🎵', text:'You send songs that become part of my soul'},
-  {icon:'🌸', text:'Your kindness is effortless and genuine'},
+  {icon:'🌸', text:'The way you make my life feel better just by being in it ❤️'},
   {icon:'😂', text:'You make me laugh even on the hardest days'},
-  {icon:'🌏', text:'You chose me across every mile and timezone'},
-  {icon:'🌙', text:'Our 2am conversations feel like home'},
-  {icon:'💪', text:'Your strength amazes me every single day'},
+  {icon:'🌏', text:'Distance means nothing when it comes to you ❤️'},
+  {icon:'🌙', text:'You bring a kind of peace into my life I’ve never felt before ❤️'},
+  {icon:'💪', text:'You’re stronger than you think, and I see it every day '},
   {icon:'🌹', text:'You are the most beautiful person I know'},
   {icon:'🦋', text:'You make ordinary moments feel magical'},
   {icon:'📞', text:'The way your voice sounds when you first pick up'},
-  {icon:'🌟', text:'You dream big and inspire me to do the same'},
+  {icon:'🌟', text:'You remind me to build my life first… and that means everything to me'},
   {icon:'🤗', text:'I can feel your hugs through the screen somehow'},
   {icon:'☕', text:'You share your mornings with me even from far away'},
-  {icon:'🎨', text:'The unique and beautiful way you see the world'},
-  {icon:'💖', text:'How deeply you feel and how freely you love'},
+  {icon:'🎨', text:'You make me see the world in a better way'},
+  {icon:'💖', text:'In a world full of people, you’re the only one I want ❤️'},
   {icon:'🌈', text:'You bring colour to my grey days'},
-  {icon:'🌊', text:'Your calm and steadiness when I am anxious'},
-  {icon:'✨', text:'The little things you remember about me'},
-  {icon:'🌻', text:'You carry sunshine wherever you go'},
+  {icon:'🌊', text:'You calm me down without even trying'},
+  {icon:'✨', text:'“The little things you do mean everything to me'},
+  {icon:'🌻', text:'With you, even bad days feel okay '},
   {icon:'🦅', text:'You never let distance shrink your big heart'},
   {icon:'🎁', text:'You give your whole self, no half-measures'},
   {icon:'🌙', text:'You wait for me, and I will always wait for you'},
-  {icon:'💌', text:'Every word you write feels like poetry'},
+  {icon:'💌', text:'You are the best thing that ever happened to me '},
   {icon:'🌍', text:'You make this big world feel small and cozy'},
   {icon:'🎂', text:'Today is your day — and I am so glad you exist'},
   {icon:'❤️', text:'Simply because you are you, and that is everything'},
 ];
 
 /* ════════════════════════════════════════════
+   🔧 DEV BYPASS — FOR PREVIEWING ONLY
+   ─────────────────────────────────────────
+   3 ways to skip the gate and preview:
+
+   1. URL param:  yourfile.html?preview=arshath
+   2. Secret tap: Tap the TOP-LEFT corner of the
+      screen 5 times quickly (works on mobile too)
+   3. Console:    Type  devBypass()  and press Enter
+
+   ⚠️  Remove or change the bypass key before
+       sending the link to her!
+════════════════════════════════════════════ */
+const DEV_KEY = 'arshath'; // ← change this secret word if you want
+
+function devBypass() {
+  // Jump straight to main site, skipping all gates
+  ['gate-early','gate-entry','gate-faceid','gate-angel'].forEach(g => {
+    const el = document.getElementById(g);
+    if (el) { el.style.display = 'none'; }
+  });
+  const site = document.getElementById('main-site');
+  site.classList.add('unlocked');
+  initLoading();
+  tryAutoplayMusic();
+  console.log('🔓 Dev bypass activated — preview mode on!');
+}
+
+// ── Method 1: URL parameter ──
+// Open the file as: yourfile.html?preview=arshath
+(function checkURLBypass() {
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('preview') === DEV_KEY) {
+    // Small toast so you know it worked
+    const toast = document.createElement('div');
+    toast.textContent = '🔧 Preview mode — gates bypassed';
+    toast.style.cssText = `
+      position:fixed; bottom:20px; left:50%; transform:translateX(-50%);
+      background:rgba(232,121,154,.18); border:1px solid rgba(232,121,154,.35);
+      backdrop-filter:blur(12px); color:#f5b0c5;
+      font-family:'DM Sans',sans-serif; font-size:.75rem;
+      letter-spacing:.08em; padding:.55rem 1.2rem;
+      border-radius:40px; z-index:99999;
+      animation:fadeUp .5s ease both;
+      pointer-events:none;
+    `;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 3500);
+    devBypass();
+    return; // skip normal gate logic
+  }
+  initGateLogic(); // normal flow
+})();
+
+// ── Method 2: Secret corner tap (5 taps, top-left) ──
+(function initSecretTap() {
+  let tapCount = 0;
+  let tapTimer = null;
+  const ZONE_SIZE = 80; // px from top-left corner
+
+  function handleTap(x, y) {
+    if (x > ZONE_SIZE || y > ZONE_SIZE) return; // only top-left corner
+    tapCount++;
+    clearTimeout(tapTimer);
+    tapTimer = setTimeout(() => { tapCount = 0; }, 2000); // reset if too slow
+
+    if (tapCount >= 5) {
+      tapCount = 0;
+      const toast = document.createElement('div');
+      toast.textContent = '🔓 Preview unlocked!';
+      toast.style.cssText = `
+        position:fixed; top:70px; left:50%; transform:translateX(-50%);
+        background:rgba(232,121,154,.2); border:1px solid rgba(232,121,154,.4);
+        backdrop-filter:blur(12px); color:#f5b0c5;
+        font-family:'DM Sans',sans-serif; font-size:.8rem;
+        letter-spacing:.08em; padding:.55rem 1.4rem;
+        border-radius:40px; z-index:99999;
+        animation:fadeUp .4s ease both; pointer-events:none;
+      `;
+      document.body.appendChild(toast);
+      setTimeout(() => toast.remove(), 2500);
+      devBypass();
+    }
+  }
+
+  // Touch (mobile)
+  document.addEventListener('touchstart', e => {
+    const t = e.touches[0];
+    handleTap(t.clientX, t.clientY);
+  }, { passive: true });
+
+  // Click (desktop)
+  document.addEventListener('click', e => {
+    handleTap(e.clientX, e.clientY);
+  });
+})();
+
+/* ════════════════════════════════════════════
    GATE LOGIC — time-based entry
 ════════════════════════════════════════════ */
-(function initGateLogic() {
+function initGateLogic() {
   const now       = new Date();
-  const year      = now.getFullYear();
   const month     = now.getMonth();
   const day       = now.getDate();
   const hour      = now.getHours();
@@ -1372,7 +1470,7 @@ const REASONS = [
     document.getElementById('entry-msg').innerHTML = `You're ${lateStr} late 😏`;
     document.getElementById('entry-sub').textContent = 'Better late than never… Come in 💖';
   }
-})();
+}
 
 function showGate(id) {
   // Hide all gates first, show specific one
